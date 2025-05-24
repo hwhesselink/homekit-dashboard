@@ -1,0 +1,33 @@
+{
+  "name": "home-app",
+  "version": "0.9.0",
+  "description": "Automatically generate Apple Homekit-like dashboards for Home Assistant",
+  "main": "home-app.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hwhesselink/home-app.git"
+  },
+  "keywords": [
+    "automation",
+    "dashboard",
+    "home-assistant",
+    "lovelace",
+    "lovelace-ui"
+  ],
+  "author": "Henk Hesselink",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/hwhesselink/home-app/issues"
+  },
+  "homepage": "https://github.com/hwhesselink/home-app#readme",
+  "devDependencies": {
+    "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1"
+  }
+}

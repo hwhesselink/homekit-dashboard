@@ -1,0 +1,8 @@
+tsconfig.json
+*.yaml*
+.exrc
+.*.swp
+__pycache__/
+
+# Dependency directories
+node_modules/
