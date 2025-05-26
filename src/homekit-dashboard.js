@@ -82,7 +82,7 @@ class StrategyHomekitDashboard {
       if (lists.indexOf(view) >= 0)
         return {}
 
-      let bg_image = view['picture'] || options['background_img'] || '/hacsfiles/homekit-dashboard/view_background.jpg'
+      let bg_image = view['picture'] || options['background_img'] || '/local/community/homekit-dashboard/view_background.jpg'
       if (!url_exists(bg_image))
         bg_image = 'https://upload.wikimedia.org/wikipedia/commons/7/70/Wikidata_logo_under_construction_sign_wallpaper.png'
       return {
