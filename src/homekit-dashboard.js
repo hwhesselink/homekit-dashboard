@@ -62,13 +62,31 @@ class StrategyHomekitDashboard {
       return null
     }
 
+    function url_exists(url, method='HEAD') {
+      // console.info('URL EXISTS', method, url)
+      var req = new XMLHttpRequest();
+      req.open(method, url, false);
+      req.send();
+
+      if (req.status == 200)
+        return true
+      if (req.status == 405)
+        // HEAD not allowed for some URLs (e.g. /api/image...)
+        return url_exists(url, 'GET')
+      return false
+    }
+
     function gen_background(view) {
       // console.info('GEN BACKGROUND', view)
       // Leave list backgrounds empty/white, like the Apple app.  Kinda ugly.
       if (lists.indexOf(view) >= 0)
         return {}
+
+      let bg_image = view['picture'] || options['background_img'] || '/hacsfiles/homekit-dashboard/view_background.jpg'
+      if (!url_exists(bg_image))
+        bg_image = 'https://upload.wikimedia.org/wikipedia/commons/7/70/Wikidata_logo_under_construction_sign_wallpaper.png'
       return {
-        image: view['picture'] || '/hacsfiles/homekit-dashboard/view_background.jpg',
+        image: bg_image,
         alignment: 'center',
         attachment: 'fixed',
         opacity: 100,
