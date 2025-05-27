@@ -95,15 +95,31 @@ class StrategyHomekitDashboard {
       }
     }
 
+    const kiosk_entity_settings = []
+    // if "input_boolean.hkdb_show_sidebar" exists it overrides
+    // setting "hide_sidebar" to false in other conditionals
+    if (hass.entities['input_boolean.hkdb_show_sidebar']) {
+      kiosk_entity_settings.push({
+        entity: {
+          "input_boolean.hkdb_show_sidebar": "on",
+        },
+        hide_sidebar: false,
+      })
+    }
+
     // Each view is based on a strategy so we delay rendering until it's opened
     return {
       kiosk_mode: {
         hide_dialog_light_color_actions: true,
-        hide_menubutton: true,
-        hide_sidebar: '[[[ !user_is_admin ]]]',
+        non_admin_settings: {
+          hide_overflow: true,
+          hide_sidebar: true,
+        },
         mobile_settings: {
-          hide_overflow: true
-        }
+          hide_overflow: true,
+          hide_sidebar: true,
+        },
+        entity_settings: kiosk_entity_settings,
       },
       views: views.concat(areas).concat(lists).map((view) => ({
         strategy: {
@@ -413,15 +429,20 @@ class StrategyHomekitDashboardView {
       // console.info('GEN SENSOR CARD', entity.entity_id)
       const dev_class = get_attr(entity, 'device_class')
 
+      let card = {}
       if (dev_class != null)
-        return gen_sensor_with_devcls_card(entity, dev_class, on_home_view)
+        card = gen_sensor_with_devcls_card(entity, dev_class, on_home_view)
 
+      if (card)
+        return card
       return gen_basic_card(entity, on_home_view)
     }
 
     function gen_sensor_with_devcls_card(entity, dev_class, on_home_view) {
       // console.info('GEN SENSOR CARD w/device_class', entity.entity_id, dev_class)
       const settings = device_class_settings[dev_class]
+      if (!settings)
+        return null
 
       return {
         type: 'custom:mushroom-template-card',
