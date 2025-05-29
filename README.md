@@ -154,9 +154,10 @@ Assign labels to entities:
 1. Click on the _Enter selection mode_ button to the left of the search bar
 1. Select all entities that you want to show on the home page
 1. From the _Add label_ dropdown (top right) select _On Home View_
-1. Click once or twice on the select all button between the search bar and the entity list to clear all selections
+1. Click once or twice on the "select all" button between the search bar and the entity list to clear all selections
 1. Select all entities that you want to be included in the summary badges
 1. From the _Add label_ dropdown select _In Summaries_
+1. _Favorites_ can be added in the same way but it's likely to be easier via the dashboard itself: in the browser or on your mobile device long-click the entity, select the _settings_ cog and select _Favorite_ in the `Add label` field and then click _UPDATE_
 
 Entities will appear in the dashboard as they are assigned to areas and given labels.
 
