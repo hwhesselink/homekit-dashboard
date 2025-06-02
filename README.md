@@ -29,7 +29,7 @@ The [installation file][installationUrl] goes into detail, including how to inst
   
     [![Open in HACS at your Home Assistant instance.][hacsBadge]][cardModHacs]
 
-    - and optionally _Kiosk Mode_ (this needs Home Assistant 2025.5.0 and Kiosk Mode v7.0.0 or later):
+    - and optionally _Kiosk Mode_ (Note: check [here][kioskModeVersion] for version compatibility depending on whether you're running Home Assistant 2025.5.0 or earlier)
   
     [![Open in HACS at your Home Assistant instance.][hacsBadge]][kioskModeHacs]
 
@@ -188,6 +188,7 @@ Turning off _Visible_ in the entity settings for the actual fan will prevent it 
 [cardModHacs]: https://my.home-assistant.io/redirect/hacs_repository/?owner=thomasloven&repository=lovelace-card-mod
 [kioskMode]: https://github.com/NemesisRE/kiosk-mode
 [kioskModeHacs]: https://my.home-assistant.io/redirect/hacs_repository/?owner=NemesisRE&repository=kiosk-mode
+[kioskModeVersion]: https://github.com/NemesisRE/kiosk-mode#installation
 
 <!-- Other References -->
 
