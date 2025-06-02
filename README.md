@@ -178,8 +178,8 @@ Turning off _Visible_ in the entity settings for the actual fan will prevent it 
 [issuesUrl]: https://github.com/hwhesselink/homekit-dashboard/issues
 [discussionsUrl]: https://github.com/hwhesselink/homekit-dashboard/discussions
 [wikiUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki
-[installationUrl]: docs/INSTALLATION.md
-[configurationUrl]: docs/CONFIGURATION.md
+[installationUrl]: INSTALLATION.md
+[configurationUrl]: CONFIGURATION.md
 [homekitDashboardHacs]: https://my.home-assistant.io/redirect/hacs_repository/?owner=hwhesselink&repository=homekit-dashboard&category=plugin
 
 [mushroomCards]: https://github.com/piitaya/lovelace-mushroom
