@@ -33,6 +33,29 @@ class StrategyHomekitDashboard {
     areas.sort((a, b) => a.name.toUpperCase().localeCompare(b.name.toUpperCase()))
     entities.sort((a, b) => get_attr(a, 'friendly_name').toUpperCase().localeCompare(get_attr(b, 'friendly_name').toUpperCase()))
 
+    const kiosk_mode = {
+      hide_dialog_light_color_actions: true,
+      non_admin_settings: {
+        hide_overflow: true,
+        hide_sidebar: true
+      },
+      mobile_settings: {
+        hide_overflow: true,
+        hide_sidebar: true
+      },
+    }
+
+    // if "input_boolean.hkdb_show_sidebar" exists it overrides
+    // setting "hide_sidebar" to false in other conditionals
+    if (hass.entities['input_boolean.hkdb_show_sidebar']) {
+      kiosk_mode.entity_settings = [{
+        entity: {
+          "input_boolean.hkdb_show_sidebar": "on",
+        },
+        hide_sidebar: false,
+      }]
+    }
+
     const views = options['views'] || [
       { area_id: 'home',  name: home_name, icon: 'mdi:home' },
       { area_id: 'climate',  name: 'Climate', icon: 'mdi:fan' },
@@ -95,32 +118,9 @@ class StrategyHomekitDashboard {
       }
     }
 
-    const kiosk_entity_settings = []
-    // if "input_boolean.hkdb_show_sidebar" exists it overrides
-    // setting "hide_sidebar" to false in other conditionals
-    if (hass.entities['input_boolean.hkdb_show_sidebar']) {
-      kiosk_entity_settings.push({
-        entity: {
-          "input_boolean.hkdb_show_sidebar": "on",
-        },
-        hide_sidebar: false,
-      })
-    }
-
     // Each view is based on a strategy so we delay rendering until it's opened
     return {
-      kiosk_mode: {
-        hide_dialog_light_color_actions: true,
-        non_admin_settings: {
-          hide_overflow: true,
-          hide_sidebar: true,
-        },
-        mobile_settings: {
-          hide_overflow: true,
-          hide_sidebar: true,
-        },
-        entity_settings: kiosk_entity_settings,
-      },
+      kiosk_mode: options['kiosk_mode'] || kiosk_mode,
       views: views.concat(areas).concat(lists).map((view) => ({
         strategy: {
           type: "custom:homekit-dashboard",
