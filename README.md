@@ -29,7 +29,7 @@ The [installation][installationUrl] wiki page goes into detail, including how to
   
     [![Open in HACS at your Home Assistant instance.][hacsBadge]][cardModHacs]
 
-    - and optionally _Kiosk Mode_ (Note: check [here][kioskModeVersion] for version compatibility depending on whether you're running Home Assistant 2025.5.0 or earlier)
+    - and optionally _Kiosk Mode_ (Note: check [here][kioskModeVersion] for version compatibility depending on whether you're running Home Assistant 2025.5.0 or earlier) (Note 2: if you install the pre-release version v8.0.0-beta.0 see [here][configureKioskNewUrl] for how to handle the changed configuration format)
   
     [![Open in HACS at your Home Assistant instance.][hacsBadge]][kioskModeHacs]
 
@@ -62,7 +62,7 @@ The [installation][installationUrl] wiki page goes into detail, including how to
 
 You now have an empty home page "My Home" and no badges.
 [Populating the dashboard][populateURL] explains how to add entities by assigning areas and labels.
-The [configuration file][configurationUrl] explains how to change the home page name, default background and other settings.
+The [configuration page][configurationUrl] explains how to change the home page name, default background and other settings.
 
 If you already have entities assigned to areas they should show up in one of the other (non-Home) views, otherwise those views will also be empty.
 
@@ -70,7 +70,7 @@ The new dashboard should show up in the Companion App.
 If it doesn't you may have to clear the frontend cache (on the device) by going to `Settings->Companion app->Debugging` and clicking _Reset the frontend cache_.
 
 NOTE: by default the sidebar and overflow button are hidden on mobile devices so if you're installing via a mobile device, once you open the dashboard there will be no way to exit.
-See the [configuration file][configurationUrl] for how to override this _before_ installing via a mobile device.
+See the [configuration page][configureKioskUrl] for how to override this **before** installing via a mobile device.
 
 [hacsBadge]: https://my.home-assistant.io/badges/hacs_repository.svg
 
@@ -86,7 +86,9 @@ See the [configuration file][configurationUrl] for how to override this _before_
 [wikiUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki
 [installationUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki/Installation
 [populateURL]: https://github.com/hwhesselink/homekit-dashboard/wiki/Populating-the-dashboard
-[configurationUrl]: CONFIGURATION.md
+[configurationUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki/Configuration
+[configureKioskUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki/Configuration#kiosk-mode
+[configureKioskNewUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki/Configuration#kiosk-mode-new-style-config
 [homekitDashboardHacs]: https://my.home-assistant.io/redirect/hacs_repository/?owner=hwhesselink&repository=homekit-dashboard&category=plugin
 
 [mushroomCards]: https://github.com/piitaya/lovelace-mushroom
