@@ -3,6 +3,12 @@
 Generate Home Assistant dashboards that behave like the Apple Home app.
 Mainly focused on the Home Assistant Companion app but the dashboards also work in browsers.
 
+This grew out of my frustration with the limitations of the Home app, which I was using as the UI for non-admin users.
+I initially wrote a Python script to generate dashboards for the Companion app directly, this project is a rewrite of the script as a custom strategy.
+It covers most of the Home app functionality and adds some extras such as mediaplayer.
+It doesn't cover everything (yet) but does what I need at the moment.
+And no complaints from the non-admin users :grinning:
+
 Homekit Dashboard makes extensive use of Home Assistant areas and labels ("On Home View", "Favorite", "In Summaries") and other settings.
 Areas drive dashboard creation, only entities assigned to an area are included in the dashboard.
 Labels determine what entities are included on the home page and in badges.
