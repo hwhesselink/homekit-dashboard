@@ -1,7 +1,15 @@
 # Homekit Dashboard
 
-Generate Home Assistant dashboards that behave like the Apple Home app.
-Mainly focused on the Home Assistant Companion app but the dashboards also work in browsers.
+This is a user-friendly dashboard for everyday use of Home Assistant.
+It has the look and feel of the Apple Home app so it's intuitive to friends and family.
+Because the dashboard runs in the Companion app it works on both Android phones and iPhones.
+
+This is not just a skin or a theme.
+It's a complete dashboard generator that automatically creates all pages for domains, areas, sensor lists, etc,. all the badges, and does all the layout of your entities.
+
+It automatically follows all changes to your Home Assistant configuration.
+It uses [custom strategy](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-strategy/)
+so adding or deleting devices and entities, moving them between areas, changing names, etc. is immediately reflected in the dashboard.
 
 This grew out of my frustration with the limitations of the Home app, which I was using as the UI for non-admin users.
 I initially wrote a Python script to generate dashboards for the Companion app directly, this project is a rewrite of the script as a custom strategy.
