@@ -1,34 +1,28 @@
 # Homekit Dashboard
 
 This is a user-friendly dashboard for everyday use of Home Assistant.
-It has the look and feel of the Apple Home app so it's intuitive to friends and family.
-Because the dashboard runs in the Companion app it works on both Android phones and iPhones.
+It has the look and feel of the Apple Home app so it’s intuitive for friends and family.
+It’s a standard Home Assistant dashboard so works on both Android and Apple devices (and in browsers).
 
 This is not just a skin or a theme.
-It's a complete dashboard generator that automatically creates all pages for domains, areas, sensor lists, etc,. all the badges, and does all the layout of your entities.
+It’s a complete dashboard generator that automatically creates all pages for domains, areas, sensor lists, etc,. all the links, badges and backgrounds, and does all the layout.
 
 It automatically follows all changes to your Home Assistant configuration.
 It uses [custom strategy](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-strategy/)
-so adding or deleting devices and entities, moving them between areas, changing names, etc. is immediately reflected in the dashboard.
+so adding or deleting devices and entities, moving them between areas, changing names, backgrounds, etc. is immediately reflected in the dashboard.
 
-This grew out of my frustration with the limitations of the Home app, which I was using as the UI for non-admin users.
-I initially wrote a Python script to generate dashboards for the Companion app directly, this project is a rewrite of the script as a custom strategy.
-It covers most of the Home app functionality and adds some extras such as mediaplayer.
-It doesn't cover everything (yet) but does what I need at the moment.
-And no complaints from the non-admin users :grinning:
+![combi view](docs/combi.jpg)
 
 Homekit Dashboard makes extensive use of Home Assistant areas and labels ("On Home View", "Favorite", "In Summaries") and other settings.
 Areas drive dashboard creation, only entities assigned to an area are included in the dashboard.
 Labels determine what entities are included on the home page and in badges.
 Adding entities is described in the [Populating the dashboard][populateURL] page in the wiki.
 
-![combi view](docs/combi.jpg)
+When installed with HACS it works out of the box: 3 lines of YAML are all you need to create a complete dashboard.
+A configuration can optionally be attached to the dashboard to fine-tune the layout, but as much as possible the dashboard uses your Home Assistant configuration.
+So for instance a background set on an area immediately shows up in the dashboard.
 
-<details>
-  <summary>More screens</summary>
-
-  ![combi view 2](docs/combi2.jpg)
-</details>
+![combi view 2](docs/combi2.jpg)
 
 # Configuring Homekit Dashboard
 
@@ -83,7 +77,8 @@ If you already have entities assigned to areas they should show up in one of the
 The new dashboard should show up in the Companion App.
 If it doesn't you may have to clear the frontend cache (on the device) by going to `Settings->Companion app->Debugging` and clicking _Reset the frontend cache_.
 
-NOTE: by default the sidebar and overflow button are hidden on mobile devices so if you're installing via a mobile device, once you open the dashboard there will be no way to exit.
+NOTE: by default the sidebar and overflow button are hidden on mobile devices if you have Kiosk Mode installed,
+so if you're installing via a mobile device once you open the dashboard there will be no way to exit.
 See the [configuration page][configureKioskUrl] for how to override this **before** installing via a mobile device.
 
 [hacsBadge]: https://my.home-assistant.io/badges/hacs_repository.svg
