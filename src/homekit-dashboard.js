@@ -85,17 +85,29 @@ class StrategyHomekitDashboard {
       return null
     }
 
+    // checking urls really slows down app startup so cache them
+    const checked_urls = {}
+
     function url_exists(url, method='HEAD') {
       // console.info('URL EXISTS', method, url)
+      if (url in checked_urls) {
+        return checked_urls[url]
+      }
+
       var req = new XMLHttpRequest();
       req.open(method, url, false);
       req.send();
 
-      if (req.status == 200)
+      if (req.status == 200) {
+        checked_urls[url] = true
         return true
+      }
+
       if (req.status == 405)
         // HEAD not allowed for some URLs (e.g. /api/image...)
         return url_exists(url, 'GET')
+
+      checked_urls[url] = false
       return false
     }
 
@@ -105,7 +117,14 @@ class StrategyHomekitDashboard {
       if (lists.indexOf(view) >= 0)
         return {}
 
-      let bg_image = view['picture'] || options['background_img'] || '/local/community/homekit-dashboard/view_background.jpg'
+      let view_background = options.background_images && options.background_images[view.area_id]
+      let bg_image = (
+        view_background ||
+        view.picture ||
+        options.background_img ||
+        '/local/community/homekit-dashboard/view_background.jpg' ||
+        '/local/view_background.jpg'
+      )
       if (!url_exists(bg_image))
         bg_image = 'https://upload.wikimedia.org/wikipedia/commons/7/70/Wikidata_logo_under_construction_sign_wallpaper.png'
       return {
