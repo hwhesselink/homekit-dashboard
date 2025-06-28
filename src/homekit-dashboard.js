@@ -1,36 +1,58 @@
 class StrategyHomekitDashboard {
   static async generate(config, hass) {
     // Query all data we need. We will make it available to views by storing it in strategy options.
-    const [areas, all_devices, all_entities] = await Promise.all([
+    const [all_areas, all_entities] = await Promise.all([
       hass.callWS({ type: "config/area_registry/list" }),
-      hass.callWS({ type: "config/device_registry/list" }),
       hass.callWS({ type: "config/entity_registry/list" }),
     ]);
 
     // console.log('CONFIG', config)
     // console.log('HASS', hass)
+    // console.log('ALL_AREAS', all_areas)
+    // console.log('ALL_ENTITIES', all_entities)
 
     const options = config['config'] || {}
 
     const home_name = options['home_name'] || 'My Home'
+    const hide_areas = options['hide_areas']
+    const show_areas = options['show_areas']
 
-    // We're only interested in devices that have an area and
-    // entities that have an area or whose device has an area.
-    // Also ignore hidden and disabled entities and those with
-    // no friendly_name
-    const devices = all_devices.filter(d => d.area_id)
+    // Default area order
+    all_areas.sort((a, b) => a.name.toUpperCase().localeCompare(b.name.toUpperCase()))
+
+    const all_area_ixs = Array.from({ length: all_areas.length }, (value, index) => index)
+    const area_id_map = Object.fromEntries(all_area_ixs.map(x => [all_areas[x].area_id, x]))
+
+    let show_area_ixs = []
+    if (show_areas) {
+      show_area_ixs = show_areas.map(s => area_id_map[s])
+      if (hide_areas != true) {
+        show_area_ixs = show_area_ixs.concat(all_area_ixs.filter(x => !show_area_ixs.includes(x)))
+      }
+    } else {
+      show_area_ixs = Array.from({ length: all_areas.length }, (value, index) => index);
+    }
+    if (hide_areas && Array.isArray(hide_areas))
+      show_area_ixs = show_area_ixs.filter(x => !hide_areas.includes(all_areas[x].area_id))
+
+    const areas = show_area_ixs.map(x => all_areas[x])
+
+    // We're only interested in entities that have an area or whose device has
+    // an area, and where the area is going to be shown.  Also ignore hidden
+    // and disabled entities and those with no friendly_name.
     const entities = [];
     for (const entity of all_entities) {
       if (entity.hidden_by == null && entity.disabled_by == null) {
         if (entity.area_id == null && entity.device_id != null)
             entity.area_id = hass['devices'][entity.device_id]['area_id']
-        if (entity.area_id != null && get_attr(entity, 'friendly_name') != null)
+        if (entity.area_id != null &&
+            show_area_ixs.includes(area_id_map[entity.area_id]) &&
+            get_attr(entity, 'friendly_name') != null)
           entities.push(entity)
       }
     }
 
-    // sort here, they'll show up nicely and consistenly later
-    areas.sort((a, b) => a.name.toUpperCase().localeCompare(b.name.toUpperCase()))
+    // sort here so they'll show up consistenly later
     entities.sort((a, b) => get_attr(a, 'friendly_name').toUpperCase().localeCompare(get_attr(b, 'friendly_name').toUpperCase()))
 
     const kiosk_mode = {
@@ -70,6 +92,7 @@ class StrategyHomekitDashboard {
       { area_id: 'temperature',  name: 'Temperature', icon: 'mdi:thermometer' },
     ]
 
+    // Generate per-area temperature and humidity pages
     areas.map(a => {
       lists.push({ area_id: `${a.area_id}_temperature`,
                     name: 'Temperature', icon: 'mdi:thermometer' })
@@ -167,6 +190,7 @@ class StrategyHomekitDashboardView {
     const { view, views, areas, lists, entities, options } = config;
 
     // if ( view != null) { console.log('VIEW', view) };
+    // console.log('AREAS', view, areas)
     // console.log('OPTIONS', options)
 
     const dashboard_name = hass['panelUrl']
@@ -1043,7 +1067,6 @@ class StrategyHomekitDashboardView {
     function gen_view_sections(view) {
       // console.info('GEN VIEW SECTIONS', view)
       const sections = [];
-      const on_home_view = [];
 
       for (const area of areas) {
         let area_domain_entities = entities.filter(e => e.area_id == area.area_id && view_domains[view.area_id].includes(entity_domain(e)))
