@@ -16,6 +16,8 @@ class StrategyHomekitDashboard {
     const home_name = options['home_name'] || 'My Home'
     const hide_areas = options['hide_areas']
     const show_areas = options['show_areas']
+    const hide_entities = options['hide_entities']
+    const show_entities = options['show_entities']
 
     // Default area order
     all_areas.sort((a, b) => a.name.toUpperCase().localeCompare(b.name.toUpperCase()))
@@ -40,7 +42,7 @@ class StrategyHomekitDashboard {
     // We're only interested in entities that have an area or whose device has
     // an area, and where the area is going to be shown.  Also ignore hidden
     // and disabled entities and those with no friendly_name.
-    const entities = [];
+    const area_entities = [];
     for (const entity of all_entities) {
       if (entity.hidden_by == null && entity.disabled_by == null) {
         if (entity.area_id == null && entity.device_id != null)
@@ -48,12 +50,87 @@ class StrategyHomekitDashboard {
         if (entity.area_id != null &&
             show_area_ixs.includes(area_id_map[entity.area_id]) &&
             get_attr(entity, 'friendly_name') != null)
-          entities.push(entity)
+          area_entities.push(entity)
       }
     }
 
-    // sort here so they'll show up consistenly later
-    entities.sort((a, b) => get_attr(a, 'friendly_name').toUpperCase().localeCompare(get_attr(b, 'friendly_name').toUpperCase()))
+    // completely arbitrary, works for me
+    const domain_order = [
+      'motion',
+      'light',
+      'temperature',
+      'humidity',
+      'fan',
+      'cover',
+      'climate',
+      'lock',
+      'security',
+      'alarm_control_panel',
+      'media_player',
+      'irrigation',
+      'water',
+    ]
+
+    function order_entities(a, b) {
+      const da = a.entity_id.split('.')[0]
+      const db = b.entity_id.split('.')[0]
+      const ia = domain_order.indexOf(da)
+      const ib = domain_order.indexOf(db)
+      const na = get_attr(a, 'friendly_name').toUpperCase()
+      const nb = get_attr(b, 'friendly_name').toUpperCase()
+
+      // if a not found
+      if (ia < 0) {
+        // and b not found
+        if (ib < 0)
+          // compare names
+          return na.localeCompare(nb)
+        // else a after b
+        return 1
+      }
+
+      // if same domain compare names
+      if (ia == ib) {
+        if (da == 'light') {
+          // light groups sort before lights
+          const ga = get_attr(a, 'entity_id') != null
+          const gb = get_attr(b, 'entity_id') != null
+          if (ga != gb) {
+            if (ga)
+              return -1
+            else
+              return 1
+          }
+        }
+        return na.localeCompare(nb)
+      }
+
+      // sort, or b last if not found
+      if (ia < ib || ib < 0)
+        return -1
+      else
+        return 1
+    }
+
+    // Default entity order
+    area_entities.sort(order_entities)
+
+    const area_entity_ixs = Array.from({ length: area_entities.length }, (value, index) => index)
+    const entity_id_map = Object.fromEntries(area_entity_ixs.map(x => [area_entities[x].entity_id, x]))
+
+    let show_entity_ixs = []
+    if (show_entities) {
+      show_entity_ixs = show_entities.map(s => entity_id_map[s])
+      if (hide_entities != true) {
+        show_entity_ixs = show_entity_ixs.concat(area_entity_ixs.filter(x => !show_entity_ixs.includes(x)))
+      }
+    } else {
+      show_entity_ixs = Array.from({ length: area_entities.length }, (value, index) => index);
+    }
+    if (hide_entities && Array.isArray(hide_entities))
+      show_entity_ixs = show_entity_ixs.filter(x => !hide_entities.includes(area_entities[x].entity_id))
+
+    const entities = show_entity_ixs.map(x => area_entities[x])
 
     const kiosk_mode = {
       hide_dialog_light_color_actions: true,
@@ -191,6 +268,7 @@ class StrategyHomekitDashboardView {
 
     // if ( view != null) { console.log('VIEW', view) };
     // console.log('AREAS', view, areas)
+    // console.log('ENTITIES', view, entities)
     // console.log('OPTIONS', options)
 
     const dashboard_name = hass['panelUrl']
@@ -951,64 +1029,6 @@ class StrategyHomekitDashboardView {
       return header
     }
 
-    // completely arbitrary, works for me
-    const domain_order = [
-      'motion',
-      'light',
-      'temperature',
-      'humidity',
-      'fan',
-      'cover',
-      'climate',
-      'lock',
-      'security',
-      'alarm_control_panel',
-      'media_player',
-      'irrigation',
-      'water',
-    ]
-
-    function order_entities(a, b) {
-      const da = a.entity_id.split('.')[0]
-      const db = b.entity_id.split('.')[0]
-      const ia = domain_order.indexOf(da)
-      const ib = domain_order.indexOf(db)
-      const na = get_attr(a, 'friendly_name').toUpperCase()
-      const nb = get_attr(b, 'friendly_name').toUpperCase()
-
-      // if a not found
-      if (ia < 0) {
-        // and b not found
-        if (ib < 0)
-          // compare names
-          return na.localeCompare(nb)
-        // else a after b
-        return 1
-      }
-
-      // if same domain compare names
-      if (ia == ib) {
-        if (da == 'light') {
-          // light groups sort before lights
-          const ga = get_attr(a, 'entity_id') != null
-          const gb = get_attr(b, 'entity_id') != null
-          if (ga != gb) {
-            if (ga)
-              return -1
-            else
-              return 1
-          }
-        }
-        return na.localeCompare(nb)
-      }
-
-      // sort, or b last if not found
-      if (ia < ib || ib < 0)
-        return -1
-      else
-        return 1
-    }
-
     function gen_section_header(name, navtgt=null, is_list=false) {
       const card = {
         type: 'heading',
@@ -1035,11 +1055,10 @@ class StrategyHomekitDashboardView {
       // console.info('GEN HOME SECTIONS', view)
       const sections = [];
 
-      const favorites = entities.filter(e => e.labels.includes('favorite'))
-      const on_home_view = entities.filter(e => e.labels.includes('on_home_view'))
+      const favorites = entities.filter(e => (e && e.labels.includes('favorite')))
+      const on_home_view = entities.filter(e => (e && e.labels.includes('on_home_view')))
 
       if (favorites.length) {
-        favorites.sort(order_entities)
         let cards = [ gen_section_header('Favorites') ]
         cards.push(...favorites.map(e => gen_entity_card(e)))
         sections.push({
@@ -1049,7 +1068,6 @@ class StrategyHomekitDashboardView {
       }
 
       if (on_home_view.length) {
-        on_home_view.sort(order_entities)
         for (const area of areas) {
           let cards = [ gen_section_header(area.name, area.area_id) ]
           cards.push(...on_home_view.filter(e => e.area_id == area.area_id).map(e => gen_entity_card(e, view)))
@@ -1071,7 +1089,6 @@ class StrategyHomekitDashboardView {
       for (const area of areas) {
         let area_domain_entities = entities.filter(e => e.area_id == area.area_id && view_domains[view.area_id].includes(entity_domain(e)))
         if (area_domain_entities) {
-          area_domain_entities.sort(order_entities)
           let cards = [ gen_section_header(area.name, area.area_id) ]
           cards.push(...area_domain_entities.map(e => gen_entity_card(e, view)))
           sections.push({
@@ -1100,7 +1117,6 @@ class StrategyHomekitDashboardView {
                                 domains.includes(entity_domain(e)))
 
         if (section_entities.length) {
-          section_entities.sort(order_entities)
           let cards = [ gen_section_header(view_type.name, view_type.area_id) ]
           cards.push(...section_entities.map(e => gen_entity_card(e, view)))
           sections.push({
