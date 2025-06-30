@@ -39,20 +39,8 @@ class StrategyHomekitDashboard {
 
     const areas = show_area_ixs.map(x => all_areas[x])
 
-    // We're only interested in entities that have an area or whose device has
-    // an area, and where the area is going to be shown.  Also ignore hidden
-    // and disabled entities and those with no friendly_name.
-    const area_entities = [];
-    for (const entity of all_entities) {
-      if (entity.hidden_by == null && entity.disabled_by == null) {
-        if (entity.area_id == null && entity.device_id != null)
-            entity.area_id = hass['devices'][entity.device_id]['area_id']
-        if (entity.area_id != null &&
-            show_area_ixs.includes(area_id_map[entity.area_id]) &&
-            get_attr(entity, 'friendly_name') != null)
-          area_entities.push(entity)
-      }
-    }
+    const sec_dev_classes = [ 'door', 'garage', 'garage_door', 'gate',
+                                      'lock', 'tamper', 'window' ]
 
     // completely arbitrary, works for me
     const domain_order = [
@@ -110,6 +98,40 @@ class StrategyHomekitDashboard {
         return -1
       else
         return 1
+    }
+
+    function entity_domain(entity) {
+      // console.info('ENTITY DOMAIN', entity.entity_id)
+      const domain = entity.entity_id.split('.')[0]
+
+      if (domain == 'cover') {
+        if (sec_dev_classes.includes(get_attr(entity, 'device_class')))
+          return 'security'
+        else
+          return 'climate'
+      }
+      if (domain == 'fan')
+        return 'climate'
+      if (domain == 'switch' && get_attr(entity, 'sprinkler_head_type'))
+        return 'irrigation'
+      return domain
+    }
+
+    // Only keep entities that have an area, or whose device has an area,
+    // where the area is going to be shown, and whose domain we want.
+    // Ignore hidden and disabled entities and those with no friendly_name.
+    const area_entities = [];
+    for (const entity of all_entities) {
+      if (entity.hidden_by == null && entity.disabled_by == null) {
+        if (entity.area_id == null && entity.device_id != null)
+            entity.area_id = hass['devices'][entity.device_id]['area_id']
+        entity._domain = entity_domain(entity)
+        if (entity.area_id != null &&
+            get_attr(entity, 'friendly_name') != null &&
+            domain_order.includes(entity._domain) &&
+            show_area_ixs.includes(area_id_map[entity.area_id]))
+          area_entities.push(entity)
+      }
     }
 
     // Default entity order
@@ -221,6 +243,7 @@ class StrategyHomekitDashboard {
       let bg_image = (
         view_background ||
         view.picture ||
+        options.background_image ||
         options.background_img ||
         '/local/community/homekit-dashboard/view_background.jpg' ||
         '/local/view_background.jpg'
@@ -248,6 +271,7 @@ class StrategyHomekitDashboard {
           areas,
           lists,
           entities,
+          sec_dev_classes,
           options,
         },
         type: 'sections',
@@ -264,7 +288,7 @@ class StrategyHomekitDashboard {
 
 class StrategyHomekitDashboardView {
   static async generate(config, hass) {
-    const { view, views, areas, lists, entities, options } = config;
+    const { view, views, areas, lists, entities, sec_dev_classes, options } = config;
 
     // if ( view != null) { console.log('VIEW', view) };
     // console.log('AREAS', view, areas)
@@ -272,8 +296,6 @@ class StrategyHomekitDashboardView {
     // console.log('OPTIONS', options)
 
     const dashboard_name = hass['panelUrl']
-    const security_deviceclasses = [ 'door', 'garage', 'garage_door', 'gate',
-                                      'lock', 'tamper', 'window' ]
 
     // These are "active" when they're closed while HA sees all covers as active when
     // open.  For awnings, doors, windows, etc. that makes sense but not for e.g. shades
@@ -281,7 +303,7 @@ class StrategyHomekitDashboardView {
     const rev_open_close = [ "shade" ]
 
     // seriously?
-    const sec_dev_cls_str = security_deviceclasses.map(e => `'${e}'`)
+    const sec_dev_cls_str = sec_dev_classes.map(e => `'${e}'`)
     const rev_open_close_str = rev_open_close.map(e => `'${e}'`)
 
     const view_domains = {
@@ -986,23 +1008,6 @@ class StrategyHomekitDashboardView {
       return gen_range_badge(type, view)
     }
 
-    function entity_domain(entity) {
-      // console.info('ENTITY DOMAIN', entity.entity_id)
-      const domain = entity.entity_id.split('.')[0]
-
-      if (domain == 'cover') {
-        if (security_deviceclasses.includes(get_attr(entity, 'device_class')))
-          return 'security'
-        else
-          return 'climate'
-      }
-      if (domain == 'fan')
-        return 'climate'
-      if (domain == 'switch' && get_attr(entity, 'sprinkler_head_type'))
-        return 'irrigation'
-      return domain
-    }
-
     function gen_view_header(name=null) {
       // console.info('GEN VIEW HEADER', name)
       const header = {
@@ -1087,7 +1092,7 @@ class StrategyHomekitDashboardView {
       const sections = [];
 
       for (const area of areas) {
-        let area_domain_entities = entities.filter(e => e.area_id == area.area_id && view_domains[view.area_id].includes(entity_domain(e)))
+        let area_domain_entities = entities.filter(e => e.area_id == area.area_id && view_domains[view.area_id].includes(e._domain))
         if (area_domain_entities) {
           let cards = [ gen_section_header(area.name, area.area_id) ]
           cards.push(...area_domain_entities.map(e => gen_entity_card(e, view)))
@@ -1112,9 +1117,8 @@ class StrategyHomekitDashboardView {
         if (view_type.area_id == 'home')
           continue
 
-        let domains = view_domains[view_type.area_id]
         let section_entities = area_entities.filter(e =>
-                                domains.includes(entity_domain(e)))
+              view_domains[view_type.area_id].includes(e._domain))
 
         if (section_entities.length) {
           let cards = [ gen_section_header(view_type.name, view_type.area_id) ]
