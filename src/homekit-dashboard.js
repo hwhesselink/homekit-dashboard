@@ -43,13 +43,12 @@ class StrategyHomekitDashboard {
                                       'lock', 'tamper', 'window' ]
 
     // completely arbitrary, works for me
-    const domain_order = [
+    const domain_order = options['domain_order'] || [
       'motion',
       'light',
       'temperature',
       'humidity',
       'fan',
-      'cover',
       'climate',
       'lock',
       'security',
@@ -60,8 +59,8 @@ class StrategyHomekitDashboard {
     ]
 
     function order_entities(a, b) {
-      const da = a.entity_id.split('.')[0]
-      const db = b.entity_id.split('.')[0]
+      const da = a._domain
+      const db = b._domain
       const ia = domain_order.indexOf(da)
       const ib = domain_order.indexOf(db)
       const na = get_attr(a, 'friendly_name').toUpperCase()
@@ -110,8 +109,6 @@ class StrategyHomekitDashboard {
         else
           return 'climate'
       }
-      if (domain == 'fan')
-        return 'climate'
       if (domain == 'switch' && get_attr(entity, 'sprinkler_head_type'))
         return 'irrigation'
       return domain
@@ -179,11 +176,16 @@ class StrategyHomekitDashboard {
 
     const views = options['views'] || [
       { area_id: 'home',  name: home_name, icon: 'mdi:home' },
-      { area_id: 'climate',  name: 'Climate', icon: 'mdi:fan' },
-      { area_id: 'light',  name: 'Lights', icon: 'mdi:lightbulb' },
-      { area_id: 'security',  name: 'Security', icon: 'mdi:security' },
-      { area_id: 'media',  name: 'Media', icon: 'mdi:music' },
-      { area_id: 'water',  name: 'Water', icon: 'mdi:water' },
+      { area_id: 'climate',  name: 'Climate',
+          icon: 'mdi:fan', domains: [ 'climate', 'fan' ] },
+      { area_id: 'light',  name: 'Lights',
+          icon: 'mdi:lightbulb', domains: [ 'light' ] },
+      { area_id: 'security',  name: 'Security',
+          icon: 'mdi:security', domains: [ 'alarm_control_panel', 'lock', 'security' ] },
+      { area_id: 'media',  name: 'Media',
+          icon: 'mdi:music', domains: [ 'media_player' ] },
+      { area_id: 'water',  name: 'Water',
+          icon: 'mdi:water', domains: [ 'irrigation' ] },
     ]
 
     const lists = [
@@ -292,7 +294,7 @@ class StrategyHomekitDashboardView {
 
     // if ( view != null) { console.log('VIEW', view) };
     // console.log('AREAS', view, areas)
-    // console.log('ENTITIES', view, entities)
+    // console.log('ENTITIES', view.area_id, entities)
     // console.log('OPTIONS', options)
 
     const dashboard_name = hass['panelUrl']
@@ -305,14 +307,6 @@ class StrategyHomekitDashboardView {
     // seriously?
     const sec_dev_cls_str = sec_dev_classes.map(e => `'${e}'`)
     const rev_open_close_str = rev_open_close.map(e => `'${e}'`)
-
-    const view_domains = {
-      climate: [ 'climate', 'fan' ],
-      light: [ 'light' ],
-      media: [ 'media_player' ],
-      security: [ 'alarm_control_panel', 'lock', 'security' ],
-      water: [ 'irrigation' ],
-    }
 
     const device_class_settings = {
       alarm_control_panel: [ 'mdi:shield-lock', '#4caf50', 'security' ],
@@ -1092,7 +1086,7 @@ class StrategyHomekitDashboardView {
       const sections = [];
 
       for (const area of areas) {
-        let area_domain_entities = entities.filter(e => e.area_id == area.area_id && view_domains[view.area_id].includes(e._domain))
+        let area_domain_entities = entities.filter(e => e.area_id == area.area_id && view.domains && view.domains.includes(e._domain))
         if (area_domain_entities) {
           let cards = [ gen_section_header(area.name, area.area_id) ]
           cards.push(...area_domain_entities.map(e => gen_entity_card(e, view)))
@@ -1118,7 +1112,7 @@ class StrategyHomekitDashboardView {
           continue
 
         let section_entities = area_entities.filter(e =>
-              view_domains[view_type.area_id].includes(e._domain))
+              view_type.domains && view_type.domains.includes(e._domain))
 
         if (section_entities.length) {
           let cards = [ gen_section_header(view_type.name, view_type.area_id) ]
