@@ -6,10 +6,11 @@ They work on Android and Apple devices and in browsers and you can have as many 
 
 Dashboard creation is easy, just a few clicks.
 Dashboards can be used as-is, or optionally each dashboard can be configured independently.
-Give everyone their own dashboard (or multiple, each with a different function).
-Set up distinct, limited, locked-down dashboards for the kids, for staff, for guests.
-Give kids a dashboard with their own background for their room but no access to the their sibling rooms or the master bedroom :smile:
-Or make per-room tablets, or per-floor.
+Some examples:
+* Give everyone their own dashboard, or multiple dashboards each with a different function
+* Set up distinct, limited, locked-down dashboards for the kids, for staff, for guests
+* Give kids a dashboard with their own background for their room but no access to the their sibling rooms or the master bedroom :smile:
+* Make per-room tablets, or per-floor
 
 Homekit Dashboard is not just a skin or a theme.
 It’s a complete dashboard generator that automatically creates all pages for domains, areas, sensor lists, etc,. all the links, badges and backgrounds, and does all the layout.
