@@ -56,7 +56,7 @@ The [installation][installationUrl] wiki page goes into detail, including how to
 
 1. Restart Home Assistant: go to `Settings`, click the 3 vertical dots at the top-right corner and select _Restart Home Assistant_ from the drop-down, click _Restart Home Assistant_ and then _RESTART_
 
-1. Go to `Settings->Dashboards`, click on _ADD DASHBOARD_ and create an empty dashboard
+1. Go to `Settings->Dashboards`, click on _ADD DASHBOARD_ and create a new/empty dashboard from scratch
 
 1. In the popup fill in the _Title_, leave the rest as-is and click _CREATE_
 
