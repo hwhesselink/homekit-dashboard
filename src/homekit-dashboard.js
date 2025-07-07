@@ -125,7 +125,6 @@ class StrategyHomekitDashboard {
         entity._domain = entity_domain(entity)
         if (entity.area_id != null &&
             get_attr(entity, 'friendly_name') != null &&
-            domain_order.includes(entity._domain) &&
             show_area_ixs.includes(area_id_map[entity.area_id]))
           area_entities.push(entity)
       }
