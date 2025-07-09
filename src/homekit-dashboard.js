@@ -250,7 +250,7 @@ class StrategyHomekitDashboard {
         '/local/view_background.jpg'
       )
       if (!url_exists(bg_image))
-        bg_image = 'https://upload.wikimedia.org/wikipedia/commons/7/70/Wikidata_logo_under_construction_sign_wallpaper.png'
+        bg_image = 'https://hkdb.anda.nl/images/Wikidata_logo_under_construction_sign_wallpaper.png'
       return {
         image: bg_image,
         alignment: 'center',
