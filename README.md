@@ -6,9 +6,8 @@ They work on Android and Apple devices and in browsers and you can have as many 
 
 Dashboard creation is easy, just a few clicks.
 Dashboards can be used as-is, or optionally each dashboard can be configured independently.
-Some examples:
 * Give everyone their own dashboard, or multiple dashboards each with a different function
-* Set up distinct, limited, locked-down dashboards for the kids, for staff, for guests
+* Set up personalized, limited, locked-down dashboards for the kids, for staff, for guests
 * Give kids a dashboard with their own background for their room but no access to the their sibling rooms or the master bedroom :smile:
 * Make per-room tablets, or per-floor
 
@@ -88,7 +87,7 @@ If it doesn't you may have to clear the frontend cache (on the device) by going 
 
 NOTE: by default the sidebar and overflow button are hidden on mobile devices if you have Kiosk Mode installed,
 so if you're installing via a mobile device once you open the dashboard there will be no way to exit.
-See the [configuration page][configureKioskUrl] for how to override this **before** installing via a mobile device.
+See [Kiosk Mode configuration][configureKioskUrl] for how to override this **before** installing via a mobile device.
 
 [hacsBadge]: https://my.home-assistant.io/badges/hacs_repository.svg
 
