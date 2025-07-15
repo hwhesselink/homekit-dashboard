@@ -18,6 +18,7 @@ class StrategyHomekitDashboard {
     const show_areas = options['show_areas']
     const hide_entities = options['hide_entities']
     const show_entities = options['show_entities']
+    const top_menu_at_bottom = options['top_menu_at_bottom']
 
     // Default area order
     all_areas.sort((a, b) => a.name.toUpperCase().localeCompare(b.name.toUpperCase()))
@@ -261,6 +262,16 @@ class StrategyHomekitDashboard {
       }
     }
 
+    function gen_tmab_card() {
+      if (!(top_menu_at_bottom && top_menu_at_bottom.screen))
+        return []
+      const tmab = { type: 'custom:header-position-card',
+                     Style: top_menu_at_bottom.screen }
+      if (top_menu_at_bottom.custom_width)
+        tmab.custom_width = top_menu_at_bottom.custom_width
+      return [ tmab ]
+    }
+
     // Each view is based on a strategy so we delay rendering until it's opened
     return {
       kiosk_mode: options['kiosk_mode'] || kiosk_mode,
@@ -282,6 +293,7 @@ class StrategyHomekitDashboard {
         max_columns: 4,
         subview: (areas.concat(lists).indexOf(view) >= 0),
         background: gen_background(view),
+        cards: gen_tmab_card(),
       }))
     }
   }

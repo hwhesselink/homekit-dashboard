@@ -45,9 +45,13 @@ The [installation][installationUrl] wiki page goes into detail, including how to
   
     [![Open in HACS at your Home Assistant instance.][hacsBadge]][cardModHacs]
 
-    - and optionally _Kiosk Mode_ (Note: check [here][kioskModeVersion] for version compatibility depending on whether you're running Home Assistant 2025.5.0 or earlier) (Note 2: if you install the pre-release version v8.0.0-beta.0 see [here][configureKioskNewUrl] for how to handle the changed configuration format)
+    - optionally _Kiosk Mode_ (Note: check [here][kioskModeVersion] for version compatibility depending on whether you're running Home Assistant 2025.5.0 or earlier) (Note 2: if you install the pre-release version v8.0.0-beta.0 see [here][configureKioskNewUrl] for how to handle the changed configuration format)
   
     [![Open in HACS at your Home Assistant instance.][hacsBadge]][kioskModeHacs]
+
+    - optionally _Header Position Card_
+  
+    [![Open in HACS at your Home Assistant instance.][hacsBadge]][HeaderPosHacs]
 
 1. Install Homekit Dashboard
 
@@ -115,6 +119,7 @@ See [Kiosk Mode configuration][configureKioskUrl] for how to override this **bef
 [kioskMode]: https://github.com/NemesisRE/kiosk-mode
 [kioskModeHacs]: https://my.home-assistant.io/redirect/hacs_repository/?owner=NemesisRE&repository=kiosk-mode
 [kioskModeVersion]: https://github.com/NemesisRE/kiosk-mode#installation
+[HeaderPosHacs]: https://my.home-assistant.io/redirect/hacs_repository/?owner=xBourner&repository=header-position-card
 
 <!-- Other References -->
 
