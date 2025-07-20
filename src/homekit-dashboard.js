@@ -57,6 +57,7 @@ class StrategyHomekitDashboard {
       'media_player',
       'irrigation',
       'water',
+      'camera',
     ]
 
     function order_entities(a, b) {
@@ -182,6 +183,8 @@ class StrategyHomekitDashboard {
           icon: 'mdi:lightbulb', domains: [ 'light' ] },
       { area_id: 'security',  name: 'Security',
           icon: 'mdi:security', domains: [ 'alarm_control_panel', 'lock', 'security' ] },
+      { area_id: 'camera',  name: 'Cameras',
+          icon: 'mdi:video', domains: [ 'camera' ] },
       { area_id: 'media',  name: 'Media',
           icon: 'mdi:music', domains: [ 'media_player' ] },
       { area_id: 'water',  name: 'Water',
@@ -334,8 +337,9 @@ class StrategyHomekitDashboardView {
     }
 
     const view_badges = {
-      '__all_areas': ['temperature', 'humidity', 'light', 'cover', 'fan', 'security',
-                          'media_player', 'climate', 'alarm_control_panel', 'irrigation'],
+      '__all_areas': ['temperature', 'humidity', 'motion', 'light', 'cover', 'fan',
+                          'security', 'media_player', 'climate',
+                          'alarm_control_panel', 'irrigation'],
       'home': ['motion', 'light', 'fan', 'cover', 'security', 'alarm_control_panel',
                           'media_player', 'climate', 'irrigation'],
       'climate': ['temperature', 'humidity', 'fan', 'cover', 'climate'],
@@ -416,6 +420,32 @@ class StrategyHomekitDashboardView {
       // console.info('ALARM CARD', card)
 
       return card
+    }
+
+    function gen_camera_card(entity, on_home_view) {
+      // console.info('GEN CAMERA CARD', entity.entity_id)
+      if (on_home_view) {
+        return {
+          type: 'tile',
+          entity: entity.entity_id,
+          vertical: false,
+          features_position: 'bottom',
+          show_entity_picture: true,
+          hide_state: false,
+          state_content: 'state',
+        }
+      }
+
+      return {
+        type: 'picture-entity',
+        entity: entity.entity_id,
+        camera_image: entity.entity_id,
+        show_state: true,
+        show_name: true,
+        camera_view: 'live',
+        fit_mode: 'cover',
+
+      }
     }
 
     function gen_climate_card(entity, on_home_view) {
