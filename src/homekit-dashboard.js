@@ -268,9 +268,11 @@ class StrategyHomekitDashboard {
     }
 
     function gen_tmab_card() {
-      if (!(top_menu_at_bottom && top_menu_at_bottom.screen))
+      const type = 'header-position-card'
+      if (!(top_menu_at_bottom && top_menu_at_bottom.screen && custom_cards.includes(type)))
         return []
-      const tmab = { type: 'custom:header-position-card',
+
+      const tmab = { type: `custom:${type}`,
                      Style: top_menu_at_bottom.screen }
       if (top_menu_at_bottom.custom_width)
         tmab.custom_width = top_menu_at_bottom.custom_width
