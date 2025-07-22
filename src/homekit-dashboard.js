@@ -11,6 +11,8 @@ class StrategyHomekitDashboard {
     // console.log('ALL_AREAS', all_areas)
     // console.log('ALL_ENTITIES', all_entities)
 
+    const custom_cards = window.customCards.map(c => c.type)
+
     const options = config['config'] || {}
 
     const home_name = options['home_name'] || 'My Home'
@@ -286,6 +288,7 @@ class StrategyHomekitDashboard {
           areas,
           lists,
           entities,
+          custom_cards,
           sec_dev_classes,
           options,
         },
@@ -304,7 +307,7 @@ class StrategyHomekitDashboard {
 
 class StrategyHomekitDashboardView {
   static async generate(config, hass) {
-    const { view, views, areas, lists, entities, sec_dev_classes, options } = config;
+    const { view, views, areas, lists, entities, custom_cards, sec_dev_classes, options } = config;
 
     // if ( view != null) { console.log('VIEW', view) };
     // console.log('AREAS', view, areas)
@@ -424,6 +427,12 @@ class StrategyHomekitDashboardView {
 
     function gen_camera_card(entity, on_home_view) {
       // console.info('GEN CAMERA CARD', entity.entity_id)
+      const name = entity.entity_id.substring('camera.'.length);
+      const config = options['cameras'] || {}
+      const camera_config = config[name] || {}
+      const dflt_card = ['advanced-camera-card', 'webrtc-camera'].filter(c => custom_cards.includes(c))[0]
+      const card = camera_config['card'] || config['card'] || dflt_card
+
       if (on_home_view) {
         return {
           type: 'tile',
@@ -436,16 +445,46 @@ class StrategyHomekitDashboardView {
         }
       }
 
-      return {
-        type: 'picture-entity',
-        entity: entity.entity_id,
-        camera_image: entity.entity_id,
-        show_state: true,
-        show_name: true,
-        camera_view: 'live',
-        fit_mode: 'cover',
+      const card_settings = config[card] || {}
+      const camera_settings = camera_config[card] || {}
+      let base = undefined
 
+      if (card == 'advanced-camera-card') {
+        base = {
+          type: `custom:${card}`,
+          cameras: [
+            { camera_entity: entity.entity_id }
+          ],
+          live: {
+            controls: {
+              ptz: {
+                hide_pan_tilt: false
+              }
+            }
+          }
+        }
       }
+
+      if (card == 'webrtc-camera') {
+        base = {
+          type: `custom:${card}`,
+          entity: entity.entity_id,
+        }
+      }
+
+      if (!base) {
+        base = {
+          type: 'picture-entity',
+          entity: entity.entity_id,
+          camera_image: entity.entity_id,
+          show_state: true,
+          show_name: true,
+          camera_view: 'live',
+          fit_mode: 'cover',
+        }
+      }
+
+      return { ...card_settings, ...camera_settings, ...base }
     }
 
     function gen_climate_card(entity, on_home_view) {
