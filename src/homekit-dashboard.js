@@ -53,6 +53,7 @@ class StrategyHomekitDashboard {
       'humidity',
       'fan',
       'climate',
+      'switch',
       'lock',
       'security',
       'alarm_control_panel',
@@ -288,6 +289,7 @@ class StrategyHomekitDashboard {
           areas,
           lists,
           entities,
+          domain_order,
           custom_cards,
           sec_dev_classes,
           options,
@@ -307,7 +309,7 @@ class StrategyHomekitDashboard {
 
 class StrategyHomekitDashboardView {
   static async generate(config, hass) {
-    const { view, views, areas, lists, entities, custom_cards, sec_dev_classes, options } = config;
+    const { view, views, areas, lists, entities, domain_order, custom_cards, sec_dev_classes, options } = config;
 
     // if ( view != null) { console.log('VIEW', view) };
     // console.log('AREAS', view, areas)
@@ -1186,6 +1188,7 @@ class StrategyHomekitDashboardView {
       const sections = [];
 
       const area_entities = entities.filter(e => e.area_id == area.area_id)
+      const shown_entities = []
 
       for (const view_type of views) {
         if (view_type.area_id == 'home')
@@ -1195,8 +1198,21 @@ class StrategyHomekitDashboardView {
               view_type.domains && view_type.domains.includes(e._domain))
 
         if (section_entities.length) {
-          let cards = [ gen_section_header(view_type.name, view_type.area_id) ]
+          shown_entities.push(...section_entities)
+          const cards = [ gen_section_header(view_type.name, view_type.area_id) ]
           cards.push(...section_entities.map(e => gen_entity_card(e, view)))
+          sections.push({
+            type: "grid",
+            cards,
+          })
+        }
+      }
+
+      if (!options.hide_other) {
+        let other_entities = area_entities.filter(e => domain_order.includes(e._domain) && !shown_entities.includes(e))
+        if (other_entities.length) {
+          const cards = [ gen_section_header('Other') ]
+          cards.push(...other_entities.map(e => gen_entity_card(e, view)))
           sections.push({
             type: "grid",
             cards,
