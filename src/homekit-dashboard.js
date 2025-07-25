@@ -470,8 +470,9 @@ class StrategyHomekitDashboardView {
       if (card == 'webrtc-camera') {
         base = {
           type: `custom:${card}`,
-          entity: entity.entity_id,
         }
+        if (!camera_settings.url)
+          base.entity = entity.entity_id
       }
 
       if (!base) {
