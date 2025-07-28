@@ -45,19 +45,14 @@ The [installation][installationUrl] wiki page goes into detail, including how to
   
     [![Open in HACS at your Home Assistant instance.][hacsBadge]][cardModHacs]
 
-    - optionally _Kiosk Mode_ (Note: check [here][kioskModeVersion] for version compatibility depending on whether you're running Home Assistant 2025.5.0 or earlier) (Note 2: if you install the pre-release version v8.0.0-beta.0 see [here][configureKioskNewUrl] for how to handle the changed configuration format)
-  
-    [![Open in HACS at your Home Assistant instance.][hacsBadge]][kioskModeHacs]
-
-    - optionally _Header Position Card_
-  
-    [![Open in HACS at your Home Assistant instance.][hacsBadge]][HeaderPosHacs]
+    - Any desired [optional cards][installOptCardUrl] for extra functionality
 
 1. Install Homekit Dashboard
 
     [![Open in HACS at your Home Assistant instance.][hacsBadge]][homekitDashboardHacs]
 
-1. Restart Home Assistant: go to `Settings`, click the 3 vertical dots at the top-right corner and select _Restart Home Assistant_ from the drop-down, click _Restart Home Assistant_ and then _RESTART_
+
+1. <a name="readme-restart-home-assistant">Restart Home Assistant:</a> go to `Settings`, click the 3 vertical dots at the top-right corner and select _Restart Home Assistant_ from the drop-down, click _Restart Home Assistant_ and then _RESTART_
 
 1. Go to `Settings->Dashboards`, click on _ADD DASHBOARD_ and create a new/empty dashboard from scratch
 
@@ -106,6 +101,7 @@ See [Kiosk Mode configuration][configureKioskUrl] for how to override this **bef
 [discussionsUrl]: https://github.com/hwhesselink/homekit-dashboard/discussions
 [wikiUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki
 [installationUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki/Installation
+[installOptCardUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki/Installation#optional-cards
 [populateURL]: https://github.com/hwhesselink/homekit-dashboard/wiki/Populating-the-dashboard
 [configurationUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki/Configuration
 [configureKioskUrl]: https://github.com/hwhesselink/homekit-dashboard/wiki/Configuration#kiosk-mode
