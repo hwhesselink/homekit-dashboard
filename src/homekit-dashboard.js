@@ -268,13 +268,16 @@ class StrategyHomekitDashboard {
 
     function gen_tmab_card() {
       const type = 'header-position-card'
-      if (!(top_menu_at_bottom && top_menu_at_bottom.screen && custom_cards.includes(type)))
+      if (!custom_cards.includes(type))
         return []
 
-      const tmab = { type: `custom:${type}`,
-                     Style: top_menu_at_bottom.screen }
-      if (top_menu_at_bottom.custom_width)
-        tmab.custom_width = top_menu_at_bottom.custom_width
+      const tmab = { type: `custom:${type}`, Style: [ 'mobile' ] }
+      if (top_menu_at_bottom) {
+        if (top_menu_at_bottom.screen)
+          tmab.Style = top_menu_at_bottom.screen
+        if (top_menu_at_bottom.custom_width)
+          tmab.custom_width = top_menu_at_bottom.custom_width
+      }
       return [ tmab ]
     }
 
@@ -457,13 +460,6 @@ class StrategyHomekitDashboardView {
           cameras: [
             { camera_entity: entity.entity_id }
           ],
-          live: {
-            controls: {
-              ptz: {
-                hide_pan_tilt: false
-              }
-            }
-          }
         }
       }
 
