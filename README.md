@@ -4,19 +4,22 @@ Easily make user-friendly dashboards for everyday use of Home Assistant.
 The dashboards have the look and feel of the Apple Home app so they're intuitive to use.
 They work on Android and Apple devices and in browsers and you can have as many as you like.
 
+Homekit Dashboard is not just a skin or a theme.
+It’s a complete dashboard generator that automatically creates all pages for domains, areas, sensor lists, etc,. all the links, badges and backgrounds, and does all the layout.
+The dashboards automatically follow all changes to your Home Assistant configuration so that adding or deleting devices and entities, moving them between areas, changing names, backgrounds, etc. is immediately reflected in the dashboards.
+
 Dashboard creation is easy, just a few clicks.
-Dashboards can be used as-is, or optionally each dashboard can be configured independently.
+They can be used as-is, or each dashboard can optionally be configured independently so you can:
+
 * Give everyone their own dashboard, or multiple dashboards each with a different function
 * Set up personalized, limited, locked-down dashboards for the kids, for staff, for guests
 * Give kids a dashboard with their own background for their room but no access to the their sibling rooms or the master bedroom :smile:
 * Make per-room tablets, or per-floor
 
-Homekit Dashboard is not just a skin or a theme.
-It’s a complete dashboard generator that automatically creates all pages for domains, areas, sensor lists, etc,. all the links, badges and backgrounds, and does all the layout.
-
-The dashboards automatically follow all changes to your Home Assistant configuration.
-They use [custom strategy](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-strategy/)
-so adding or deleting devices and entities, moving them between areas, changing names, backgrounds, etc. is immediately reflected in every dashboard.
+The per-dashboard configuration is stored as YAML with each dashboard.
+This keeps it separate from your Home Assistant configuration so that it's easy to manage large numbers of dashboards because
+Home Assistant changes don't require dashboard updates.
+And because it's YAML you can easily make templates, version-control your dashboards, etc.
 
 ![combi view](docs/combi.jpg)
 
@@ -26,9 +29,6 @@ Labels determine what entities are included on the home page and in badges.
 
 Homekit Dashboard works out of the box: 3 lines of YAML are all you need to create a complete dashboard populated with assigned entities.
 If you've not yet configured areas you need to do this once for the first dashboard, see [Populating the dashboard][populateURL] in the wiki.
-
-A [configuration][configurationUrl] can optionally be attached to a dashboard, but as much as possible the dashboards use your Home Assistant configuration.
-So for instance, unless overridden in the configuration, a background set on an area immediately shows up in every dashboard.
 
 ![combi view 2](docs/combi2.jpg)
 
