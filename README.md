@@ -41,7 +41,7 @@ The [installation][installationUrl] wiki page goes into detail, including how to
 
     [![Open in HACS at your Home Assistant instance.][hacsBadge]][mushroomCardsHacs]
 
-    - _Card Mod 3_
+    - _Card Mod_
   
     [![Open in HACS at your Home Assistant instance.][hacsBadge]][cardModHacs]
 
