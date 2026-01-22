@@ -241,10 +241,6 @@ class StrategyHomekitDashboard {
 
     function gen_background(view) {
       // console.info('GEN BACKGROUND', view)
-      // Leave list backgrounds empty/white, like the Apple app.  Kinda ugly.
-      if (lists.indexOf(view) >= 0)
-        return {}
-
       let view_background = options.background_images && options.background_images[view.area_id]
       let bg_image = (
         view_background ||
@@ -1114,7 +1110,7 @@ class StrategyHomekitDashboardView {
         heading: name,
         card_mod: {
           style: `ha-card div.content.title {
-                    color: {{ 'grey' if ${is_list} else 'white' }};
+                    color: white;
                     font-size: 18px;
                     font-weight: 450;
                   }`
@@ -1237,18 +1233,29 @@ class StrategyHomekitDashboardView {
       if (list_entities.length) {
         for (const area of areas) {
           if (area_id == null || area_id == area.area_id) {
-            let cards = [ gen_section_header(area.name, area.area_id, true) ]
-            cards.push(...list_entities.filter(e => e.area_id == area.area_id).map(e => gen_entity_card(e, area)))
-            sections.push({
-              type: "grid",
-              cards,
-            })
+            let cards = []
+            let aes = list_entities.filter(e => e.area_id == area.area_id).map(e => `${e.entity_id}`)
+            if (aes.length) {
+              cards = [ gen_section_header(area.name, area.area_id, true) ]
+              cards.push({
+                type: "entities",
+                state_color: true,
+                show_header_toggle: false,
+                entities: aes,
+                card_mod: {
+                  style: "ha-card { background-color: lightgrey }"
+                }
+              })
+              sections.push({
+                type: "grid",
+                cards: cards,
+              })
+            }
           }
         }
       }
 
-      // filter out sections with only a single (i.e. the heading) card
-      return sections.filter(s => s['cards'].length > 1)
+      return sections
     }
 
     function gen_view(view) {
